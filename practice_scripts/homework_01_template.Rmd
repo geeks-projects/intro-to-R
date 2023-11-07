@@ -1,0 +1,108 @@
+---
+title: "Homework Assignment #1"
+---
+
+
+**Your Name**:
+**Your Email**:
+
+
+
+
+# Load Packages and Data
+
+
+
+```{r}
+library(tidyverse)
+
+
+```
+
+
+
+
+
+```{r}
+auto_claims
+```
+
+
+
+# Problem 1
+
+
+
+
+```{r}
+
+df1 %>% 
+  mutate(months_category = ---- ) %>% 
+  group_by( ---- ) %>% 
+  summarise( ---- )
+
+
+```
+
+
+
+# Problem 2
+
+
+
+
+```{r}
+
+df1 %>% 
+  group_by( ---- ) %>% 
+  top_n( ---- ) %>% 
+  summarise( ---- )
+
+  
+```
+
+
+
+
+# Problem 3
+
+
+```{r}
+
+
+
+
+
+
+
+```
+
+
+
+
+# Problem 4
+
+
+
+
+```{r}
+
+
+
+
+
+
+```
+
+
+
+
+# Problem 5
+
+
+
+```{r}
+
+
+```
+

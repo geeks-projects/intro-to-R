@@ -1,0 +1,383 @@
+---
+title: "GEEKS Uganda"
+subtitle: "Day 01 - Getting intimate with R"
+author: "Amanyiraho Robinson"
+date: '`r Sys.Date()`'
+output:
+  html_document:
+    toc: true
+    toc_depth: 2
+    css: "styles.css"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Install and load packages in R
+
+### What is a package?
+
+```{r}
+
+# installing a single package with base R
+# install.packages("pacman")
+
+# installing multiple packages with base R
+# install.packages(c("tidyverse", "lubridate", "xlsx", "skimr", "janitor", "rmarkdown", "rio", "here"))
+```
+
+```{r}
+# Installing (if necessary) and load packages using pacman package
+# pacman::p_load(tidyverse, lubridate, skimr, xlsx, janitor, rmarkdown, rio, here)
+# library(tidyverse)
+# library(lubridate)
+```
+
+## Why R?
+
+### Brief definition 
+- R is a programming language. 
+- free software environment for statistical computing and graphics. 
+- Used to perform interesting tasks such as linear regression, logistic regression, time series, statistical inference, and much more. 
+- used for creating data visuals, reports, geographical analysis and web applications.
+
+### R is used for:
+
+Statistical inference
+Data analysis
+Machine learning
+Executing scientific simulations
+Operations research
+
+### Companies using R
+![Companies using R](images/International-Companies-Using-R.webp)
+
+## Data Types and Structures in R
+
+### Understanding Data Types
+
+The best and right way to start your journey learning R programming language is to have a solid understanding of data types and structures and when to use them.
+
+To begin, **remember that in R, everything is an object**.
+
+Next, we are looking at **some** of the basic data types in R.
+
+a.  character - symbols, letters, words or phrases in single or double quotation marks
+
+    <br>
+
+```{r}
+"bread"
+
+'coffee'
+
+"12"
+
+"I need 2 cups of coffee."
+class("12") 
+typeof("12") 
+
+```
+
+b.  numeric
+
+```{r}
+1
+
+123
+
+12.3
+
+class(12.3) 
+typeof(123) 
+```
+
+c.  integer - a special case of numeric data, discrete values like unique identifiers eg. student id. To store a value as an integer, we need to specify it as such. Integers are usually followed by the capital 'L' notation to denote the data type.
+
+```{r}
+12
+
+100
+
+10L
+
+class(100) 
+typeof(10L) 
+```
+
+d.  logical - logical or boolean values i.e. TRUE or FALSE.
+
+```{r}
+FALSE
+
+hasPVC <- TRUE
+hasPVC
+```
+
+
+
+<br>
+
+The elements of each of these data types can be combined to form data structures, such as data frames, atomic vectors, etc.
+
+## Understanding Data structures
+
+Data structures - a means of organizing data for effective use. 
+This helps to reduce the challenges faced in managing space and performance of our codes.
+
+As with other programming languages, in R programming language, different variables are used to store different data which are stored in reserved area in the system memory.
+
+<br>
+
+In this section, we will be covering the **some** of the data structures in R:
+
+<br>
+
+1.  Vectors
+
+<br>
+
+```{r}
+# vectors
+c()
+
+my_vector <- c("bags", "shoes", "wrist-watch", "money")
+
+my_vector
+
+my_alphabets <- letters[1:10]
+
+my_alphabets
+
+
+```
+
+2.  Lists
+
+```{r}
+# lists
+# List
+# list is a generic vector containing different types of objects.
+
+# For example, the following variable x is a list containing copies of three vectors n, s, b, and a numeric value 3.
+
+a = c(2, 3, 5) 
+b = c("aa", "bb", "cc", "dd", "ee") 
+c = c(TRUE, FALSE, TRUE, FALSE, FALSE) 
+my_list = list(a, b, c, 3, "My name")   # my_list contains copies of a,b,c,3
+# List Slicing
+# We retrieve a list slice with the single square bracket "[]" operator. 
+# The following is a slice containing the second member of my_list, which is a copy of b.
+
+my_list[2] 
+
+# With an index vector, we can retrieve a slice with multiple members. 
+# Here a slice containing the second and fourth members of my_list.
+
+my_list[c(2, 4)] 
+
+# Member Reference
+# In order to reference a list member directly, we have to use the double square bracket "[[]]" operator. 
+# The following object my_list[[2]] is the second member of my_list. 
+# In other words, my_list[[2]] is a copy of b, but is not a slice containing b or its copy.
+
+my_list[[2]] 
+
+# We can modify its content directly.
+
+my_list[[2]][2] = "ta" 
+my_list[[2]] 
+
+
+# Named List Members
+# We can assign names to list members, and reference them by names instead of numeric indexes.
+# 
+# For example, in the following, v is a list of two members, named "bob" and "john".
+
+v = list(bob=c(2, 3, 5), john=c("aa", "bb")) 
+v # print
+
+# List Slicing
+# We retrieve a list slice with the single square bracket "[]" operator. Here is a list slice containing a member of v named "bob".
+
+v["bob"] 
+v[1]
+v$bob
+
+# With an index vector, we can retrieve a slice with multiple members. Here is a list slice with both members of v. Notice how they are reversed from their original positions in v.
+
+v[c("john", "bob")] 
+
+# Member Reference
+# In order to reference a list member directly, we have to use the double square bracket "[[]]" operator. 
+# The following references a member of v by name.
+
+v[["bob"]] 
+
+# A named list member can also be referenced directly with the "$" operator in lieu of the double square bracket operator.
+
+v$bob 
+
+```
+
+3.  Data Frames
+
+- Create a data frame
+```{r}
+library(tidyverse)
+
+# Create a data frame
+my_df_no_colnames <- data.frame(
+  c("John", "Buba"),
+  c(2,3)
+)
+```
+
+- Assign col names
+
+```{r}
+# assign col names
+names(my_df_no_colnames) <- c("Student Name", "Gender")
+
+# Print my_df to the screen
+my_df_no_colnames
+
+# View the class of my_df
+class(my_df_no_colnames)
+
+```
+
+- Create data frame from a vector
+
+```{r}
+
+# Vectors
+student_names <- c("Michael", "Bello", "Tonye", "Tayo","Yusuf", "Success", "Aisha")
+gender <- c("M","M","F","F","M","M", "F")
+
+# Data frame
+# create a data frame from vectors
+my_df <- data.frame(student_names,gender)
+
+# my_df <- data_frame(student_names,gender) `data_frame()` was deprecated in tibble 1.1.0
+
+```
+
+4. Tibble
+
+- Create a tibble
+```{r}
+# Tibble
+# Create a tibble
+tibble(1:5, c("a", "b", "c", "d", "e"))
+
+# Check this out! What went wrong?
+#tibble(1:5, c("a","d","e")) 
+```
+
+- Create tibble with named columns
+```{r}
+name = c("john", "alexis", "Steph", "Quiera")
+age  = c(24, 44, 26, 25)
+
+my_tbl <- tibble(
+  name = c("jojo", "sofia", "robin", "sisie"),
+  age  = c(14, 13, 16, 15)
+)
+
+my_tbl <- tibble(name,age)
+
+
+# Print my_df to the screen
+my_tbl
+
+```
+
+- More on tibbles
+
+```{r}
+# Add new column
+# Example 1: Add Column with $-Operator
+state_residence <- c("Abia","Ogun", "Kwara", "Bayelsa")
+state_of_origin <- c("Adamawa","Oyo", "Kwara", "Borno")
+
+my_tbl$state_residence <- state_residence                    # Add new column to data
+
+my_tbl["state of origin"] <- c("Adamawa","Oyo", "Kwara", "Borno")                    # Add new column to data
+
+my_tbl$dob <- c("23-09-1900", "09-09-2001", "23-09-2009", "")
+
+# Not assigned to the tibble, my_tbl
+my_tbl %>% add_column(student_color = c("red", "yellow", "green", "black"), student_weight = c(5:8))
+
+# Assigned to the tibble, my_tbl
+my_tbl <- my_tbl %>% add_column(student_color = c("red", "yellow", "green", "black"), student_weight = c(5:8))
+
+
+# Add new rows or observation
+new_row <- c("Tayo", 12, "Borno", "Borno", NA, "purple", 6.7)
+my_tbl <- rbind(my_tbl, new_row)              # Apply rbind function
+
+fruits <- c("Apple", "orange","fig","banana","Apple")
+
+# rows and columns
+my_tbl <- bind_cols(my_tbl, fruits)
+bind_rows()
+
+```
+
+- Difference between data frame and tibble
+
+```{r}
+# Difference between data frame and tibble
+# Create a data frame using the data.frame() function
+
+# check out this! What is the problem?
+# my_df <- data.frame(
+#   name       = c("john", "alexis", "Steph", "Quiera"),
+#   age_years  = c(24, 44, 26, 25),
+#   age_months = age_years * 12
+# )
+
+# fix it up
+# my_df <- data.frame(
+#   name       = c("john", "alexis", "Steph", "Quiera"),
+#   age_years  = c(24, 44, 26, 25)
+# )
+
+# my_df$age_months <-  my_df$age_years * 12
+ 
+# tibble
+my_tbl <- tibble(
+  name       = c("john", "alexis", "Steph", "Quiera"),
+  age_years  = c(24, 44, 26, 25),
+  age_months = age_years * 12
+)
+
+```
+
+## Control statements
+
+- enable control the flow of execution of a series of R expressions
+```{r}
+# refer to script on control statements
+```
+
+## Functions in R
+
+### Why functions?
+
+-   automate common tasks
+
+-   named function making codes esier to understand.
+
+-   update code easily when requirements or tasks are changed.
+
+-   eliminate copy and paste of same codes in multiple places in a single script
+
+
+```{r}
+# refer to script on functions
+```
+

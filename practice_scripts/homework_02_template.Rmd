@@ -1,0 +1,116 @@
+---
+title: "Homework Assignment #1"
+---
+
+
+**Your Name**:
+**Your Email**:
+
+
+In this homework assignment we will be focusing on data analysis and visualization with the `tidyverse`.
+
+Before starting this assignment, please download `R` and `RStudio Desktop` on your computer. Both are open-source and free to use.
+
+Detailed installation instructions can be found at https://www.datacamp.com/community/tutorials/installing-R-windows-mac-ubuntu
+
+After completing the assignment, please upload this file (`.Rmd`) to Blackboard as your submission.
+
+
+# Load Packages and Data
+
+```{r}
+
+```
+
+**Note:** If you get an error running the code below, make sure that you have installed the required packages in your RStudio desktop environment.
+
+
+```{r}
+library(tidyverse)
+
+
+```
+
+
+
+```{r}
+
+```
+
+
+
+# Problem 1
+
+
+
+```{r}
+
+```
+
+
+
+```{r}
+
+
+```
+
+
+
+# Problem 2
+
+
+
+
+```{r}
+
+
+
+  
+```
+
+
+
+
+# Problem 3
+
+
+
+```{r}
+
+
+
+
+
+
+
+```
+
+
+
+
+# Problem 4
+
+
+
+```{r}
+
+
+
+
+
+
+```
+
+
+
+
+# Problem 5
+
+
+
+
+```{r}
+
+
+```
+

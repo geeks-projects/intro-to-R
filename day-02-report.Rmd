@@ -1,0 +1,264 @@
+---
+title: "Introduction to R"
+subtitle: "Day 02 - Reporting in R"
+author: "Robinson Amanyiraho"
+date: '`r Sys.Date()`'
+output:
+  html_document:
+    toc: true
+    toc_depth: 2
+    css: "styles.css"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+![Artwork by @allison_horst](images/alison/rstats-artwork/rmarkdown_wizards.png)
+
+## R Markdown
+
+---
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. 
+
+R Markdown files are designed to be used in three ways:
+
+* For communicating to decision makers, who want to focus on the conclusions, not the code behind the analysis.
+
+* For collaborating with other data scientists (including future you!), who are interested in both your conclusions, and how you reached them (i.e. the code).
+
+* As an environment in which to do data science, as a modern day lab notebook where you can capture not only what you did, but also what you were thinking.
+
+You can embed an R code chunk like this:
+
+```{r Salaries, eval = TRUE, warning=FALSE, message=FALSE, echo=FALSE}
+
+# eval = FALSE (Show code, but don't run, no output)
+# echo = FALSE (Don't show code, but run, show output)
+# results = "hide" (Show code, and run, but don't show output)
+# message = FALSE or warning = FALSE prevents messages or warnings from appearing in the finished file.
+# fig.keep = "none" (suppresses figure output)
+
+library(tidyverse)
+data(Salaries, package="carData")
+Salaries_df <- Salaries
+head(Salaries_df)
+```
+This is a plot
+
+```{r }
+# plot salary histograms by rank
+g <- ggplot(Salaries_df, aes(x = salary)) +
+  geom_histogram(fill = "cornflowerblue",
+                 color = "white") +
+  facet_wrap(~rank, ncol = 1) +
+  labs(title = "Salary histograms by rank")
+g
+```
+
+## Exercises
+1. Create a new notebook using File > New File > R Notebook. Read the instructions. Practice running the chunks. Verify that you can modify the code, re-run it, and see modified output.
+
+2. Create a new R Markdown document with File > New File > R Markdown… Knit it by clicking the appropriate button. Knit it by using the appropriate keyboard short cut. Verify that you can modify the input and see the output update.
+
+3. Compare and contrast the R notebook and R markdown files you created above. How are the outputs similar? How are they different? How are the inputs similar? How are they different? What happens if you copy the YAML header from one to the other?
+
+4. Create one new R Markdown document for each of the three built-in formats: HTML, PDF and Word. Knit each of the three documents. How does the output differ? How does the input differ? (You may need to install LaTeX in order to build the PDF output — RStudio will prompt you if this is necessary.)
+
+We can use the `ggplot2` package can be used to create our plots
+
+## Another Plot
+
+```{r pressure, echo=FALSE}
+plotdata <- Salaries %>%
+  group_by(sex, rank, discipline) %>%
+  summarize(n = n(),
+            mean = mean(salary),
+            sd = sd(salary),
+            se = sd / sqrt(n))
+
+# create better labels for discipline
+plotdata$discipline <- factor(plotdata$discipline,
+                              labels = c("Theoretical",
+                                         "Applied"))
+# create plot
+ggplot(plotdata, 
+       aes(x = sex, 
+           y = mean,
+           color = sex)) +
+  geom_point(size = 3) +
+  geom_errorbar(aes(ymin = mean - se, 
+                    ymax = mean + se),
+                width = .1) +
+  scale_y_continuous(breaks = seq(70000, 140000, 10000),
+                     label = scales::dollar) +
+  facet_grid(. ~ rank + discipline) +
+  theme_bw() +
+  theme(legend.position = "none",
+        panel.grid.major.x = element_blank(),
+        panel.grid.minor.y = element_blank()) +
+  labs(x="", 
+       y="", 
+       title="Nine month academic salaries by gender, discipline, and rank",
+       subtitle = "(Means and standard errors)") +
+  scale_color_brewer(palette="Set1")
+```
+
+Text formatting 
+------------------------------------------------------------
+
+*italic*  or _italic_
+**bold**   __bold__
+`code`
+superscript^2^ and subscript~2~
+
+Headings
+------------------------------------------------------------
+
+# 1st Level Header
+
+## 2nd Level Header
+
+### 3rd Level Header
+
+#### 4th Level Header
+
+Lists
+------------------------------------------------------------
+
+*   Bulleted list item 1
+
+*   Item 2
+
+    * Item 2a
+
+    * Item 2b
+
+1.  Numbered list item 1
+
+1.  Item 2. The numbers are incremented automatically in the output.
+
+Links and images
+------------------------------------------------------------
+
+<http://rstudio.com>
+
+[This is RStudio Home page](http://rstudio.com)
+
+![Fuschia caption text](fuschia.jpeg)
+
+Tables 
+------------------------------------------------------------
+
+First Header  | Second Header | Third Header 
+------------- | ------------- | ------------
+Content Cell  | Content Cell  | Content
+Content Cell  | Content Cell. | Content
+
+```{r}
+
+```
+
+
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+The quick brown fox jumped over the lazy dog.[^quick-fox]
+
+---
+
+Use three or more `-` for a horizontal rule. For example,
+
+---
+
+The horizontal rule uses the same syntax as a YAML block? So how does R markdown
+distinguish between the two?  Three dashes ("---") is only treated the start of
+a YAML block if it is at the start of the document.
+
+> This would be a block quote. Generally, block quotes are used to indicate
+> quotes longer than a three or four lines.
+
+[^quick-fox]: This is an example of a footnote. The sentence this is footnoting
+  is often used for displaying fonts because it includes all 26 letters of the
+  English alphabet.
+
+
+## RMarkdown Themes
+<https://www.datadreaming.org/post/r-markdown-theme-gallery/>
+
+
+## Tables using knitr 
+```{r}
+knitr::kable(
+  Salaries_df[1:5, ], 
+  caption = "A knitr kable."
+)
+```
+
+
+## Inline code
+There is one other way to embed R code into an R Markdown document: directly into the text, with: `r `. This can be very useful if you mention properties of your data in the text. 
+
+```{r, echo=FALSE, results='hide'}
+avg_salaries <- scales::dollar_format(scale = 1e5,prefix = "$" ) 
+z <- avg_salaries(round(mean(Salaries_df$salary)))
+z
+```
+
+
+The number of observations in the Salaries data frame used in this document is  `r nrow(Salaries_df)`, while the avarage salary is  `r z`
+
+
+# Tabset {.tabset .tabset-fade .tabset-pills}
+
+## Simple time series
+
+This is Tab 1
+```{r}
+ggplot(economics, aes(x = date, y = psavert)) +
+  geom_line() +
+  labs(title = "Personal Savings Rate",
+       x = "Date",
+       y = "Personal Savings Rate")
+```
+
+
+## Simple time series with modified date axis
+
+This is Tab 2
+```{r}
+library(scales)
+ggplot(economics, aes(x = date, y = psavert)) +
+  geom_line(color = "indianred3", 
+            size=1 ) +
+  geom_smooth() +
+  scale_x_date(date_breaks = '5 years', 
+               labels = date_format("%b-%y")) +
+  labs(title = "Personal Savings Rate",
+       subtitle = "1967 to 2015",
+       x = "",
+       y = "Personal Savings Rate") +
+  theme_minimal()
+```
+
+
+# Resources
+1. [HTML Reports](https://bookdown.org/yihui/rmarkdown/html-document.html) & [PDF Reports](https://bookdown.org/yihui/rmarkdown/pdf-document.html)
+2. [HTML Slide Decks](https://bookdown.org/yihui/rmarkdown/ioslides-presentation.html) & [PowerPoint](https://bookdown.org/yihui/rmarkdown/powerpoint-presentation.html)
+3. [Interactive Dashboards](https://rmarkdown.rstudio.com/flexdashboard/index.html)
+4. [Books with `bookdown`](https://bookdown.org/)
+5. [Websites with `blogdown`](https://bookdown.org/yihui/blogdown/)
+
+## Key Resources
+
+- [RMarkdown Website with Gallery](https://rmarkdown.rstudio.com/index.html)
+
+- Key Reference: [RMarkdown - The Definitive Guide](https://bookdown.org/yihui/rmarkdown/)
+
+- PDF Printing Setup: [tinytex](https://yihui.name/tinytex/)
+

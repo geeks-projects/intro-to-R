@@ -1,0 +1,322 @@
+---
+title: "R for Data Analysis FREE Class"
+subtitle: "Day 02 - Data Manipulation, Visualization and Reporting in R"
+author: "Bilikisu Aderinto"
+date: '`r Sys.Date()`'
+output:
+  html_document:
+    toc: true
+    toc_depth: 2
+    css: "styles.css"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Manipulating data
+
+![Artwork by @allison_horst](images/alison/rstats-artwork/dplyr_wrangling.png)
+
+```{r message=FALSE, warning=FALSE}
+library(tidyverse)
+library(lubridate)
+library(janitor)
+library(skimr)
+
+# Installing (if necessary) and load packages using pacman package
+# pacman::p_load(tidyverse, lubridate, skimr, janitor)
+```
+
+<br>
+
+## importing data
+```{r}
+
+disney_data <- readr::read_csv("data/disney_plus_titles.csv")
+```
+
+<br>
+
+```{r}
+# a quick glimpse into the structure of the data
+glimpse(disney_data)
+```
+
+<br>
+
+## Cleaning data i.e. variable names
+
+
+
+```{r}
+# clean names
+disney_data_clean_names <- janitor::clean_names(disney_data)
+
+#glimpse(disney_data_clean_names)
+```
+
+<br>
+
+## Statistical summary of data set
+
+<br>
+
+```{r}
+# statistical summary of data set
+skimr::skim(disney_data_clean_names)
+
+# summary(disney_data_clean_names)
+
+```
+
+<br>
+
+## Dealing with missing values
+
+### Find missing values
+```{r}
+# finding missing values in vector, data frame
+# is.na(disney_data_clean_names)
+
+# total count of missing values
+sum(is.na(disney_data_clean_names))
+
+```
+
+<br>
+
+### Remove missing values
+
+```{r}
+# remove all rows with missing values
+disney_data_no_nas <- na.omit(disney_data_clean_names)
+
+sum(is.na(disney_data_no_nas))
+
+skimr::skim(disney_data_no_nas)
+```
+
+<br>
+
+## Using Pipes, %>% from the magrittr package
+
+```{r}
+
+# connect a sequence of multiple operations. 
+
+disney_data_cleaned <- readr::read_csv("data/disney_plus_titles.csv") %>% 
+  janitor::clean_names() %>% 
+  na.omit()
+
+```
+
+### head() and tail() view
+
+```{r}
+disney_data_cleaned %>% head()
+
+disney_data_cleaned %>% tail()
+```
+
+## Accessing variables in a data frame
+
+```{r}
+disney_data_cleaned$director
+
+disney_data_cleaned[, "director"]
+
+# check out the difference i.e. vector vs data.frame
+class(disney_data_cleaned$director)
+
+class(disney_data_cleaned[, "director"])
+```
+
+
+
+## Subsetting data
+Example data_frame_name[row_index(or range of indices), col_name or col_index]
+
+### Example 1
+```{r}
+
+# select data on row 10, with value from column number 3
+disney_data_cleaned[10, 3]
+
+```
+
+### Example 2
+
+```{r}
+# select range of rows from 10 to 15, and values for columns 2 to 5
+disney_data_cleaned[10:15, 2:5]
+
+```
+
+### Example 3
+```{r}
+
+# select rows 3,6,9, with values from column 2,4,6,7
+disney_data_cleaned[c(3,6,9), c(2,4,6:7)]
+
+```
+
+
+### Example 4
+
+```{r}
+
+# using column names for subsetting
+disney_data_cleaned[1:10, c("title", "director", "country")]
+
+```
+
+## dplyr
+
+### selecting variables
+
+```{r}
+
+# selecting variables
+
+dplyr::select(disney_data_cleaned, type, title)
+
+# using pipes
+disney_data_cleaned %>% 
+  select(type, rating, duration)
+```
+
+### filter data 
+```{r}
+# filter data 
+
+disney_data_cleaned %>% 
+  select(type, rating, duration) %>% 
+  dplyr::filter(rating == "PG")
+
+```
+
+### Filtering data on selected variables
+
+```{r}
+# Run this code. What is the result?
+# disney_data_cleaned %>% 
+#   select(2, 3, 6) %>% 
+#   filter(release_year > 2000)
+
+# Uncomment and run the code below
+# disney_data_cleaned %>% 
+#   select(2, 3, 6, 8) %>% 
+#   filter(release_year > 2000)
+
+```
+
+### using grepl() with filter()
+
+```{r}
+# using grepl() with filter()
+disney_data_cleaned %>% filter(grepl('United States', country),
+                               rating == 'PG')
+
+disney_data_cleaned %>% filter(!grepl('United States', country),
+                           rating == 'PG') 
+```
+
+
+### Change, add or remove variables
+
+```{r}
+# mutate
+disney_data_cleaned %>% 
+  select(title, date_added, duration) %>% 
+  dplyr::mutate(duration_nums = str_remove(string = duration, pattern = " min") %>% 
+           as.numeric()) %>% 
+  #remove duration variable by assigning NULL value
+  dplyr::mutate(duration = NULL)
+
+```
+
+### group_by and summarise()/summarize()
+
+```{r}
+# group_by and summarise()/summarize()
+
+disney_data_cleaned %>% 
+  group_by(release_year) %>% 
+  summarise(counts = n()) #%>% 
+  # ungroup()
+
+```
+
+<br>
+
+## Data Visualization
+
+### bar plot
+Bar plot: a plot with rectangular bars used to compare different categorical values of a variable.
+
+
+#### Example 1
+```{r}
+
+# bar plot
+ggplot(data=disney_data, mapping = aes(rating))+
+  geom_bar()
+
+```
+
+#### Example 2
+
+```{r}
+
+# bar plot
+
+ggplot(disney_data_cleaned, aes(rating, fill= rating))+
+  geom_bar()
+
+```
+
+#### Example 3
+
+```{r}
+disney_data_cleaned %>% 
+  group_by(rating) %>% 
+  summarise(count_by_rating = n()) %>% 
+  ggplot(aes(x=rating, y=count_by_rating, fill=rating))+
+  geom_bar(stat = "identity")
+
+```
+
+#### Example 4
+
+```{r}
+
+df_rating_year <- disney_data_cleaned %>% 
+  group_by(release_year) %>% 
+  summarise(release_count = n()) %>% 
+  ungroup()
+
+```
+
+
+
+### line plot
+
+Line plot: a plot which displays data as points on a line showing the value of the variable at each point.  
+
+```{r}
+
+# line plot
+df_rating_year %>% 
+  ggplot( aes(x = release_year, y = release_count)) +
+  geom_line()
+
+```
+
+
+
+## References
+[Allison Stats Illustrations ]("https://github.com/allisonhorst/stats-illustrations")
+
+<br>
+
